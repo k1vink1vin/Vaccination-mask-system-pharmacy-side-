@@ -1,0 +1,9 @@
+D:\Project\Mask\Mask\bin\Debug\Mask.exe.config
+D:\Project\Mask\Mask\bin\Debug\Mask.exe
+D:\Project\Mask\Mask\bin\Debug\Mask.pdb
+D:\Project\Mask\Mask\obj\Debug\Mask.csprojAssemblyReference.cache
+D:\Project\Mask\Mask\obj\Debug\Mask.Form1.resources
+D:\Project\Mask\Mask\obj\Debug\Mask.Properties.Resources.resources
+D:\Project\Mask\Mask\obj\Debug\Mask.csproj.GenerateResource.cache
+D:\Project\Mask\Mask\obj\Debug\Mask.exe
+D:\Project\Mask\Mask\obj\Debug\Mask.pdb

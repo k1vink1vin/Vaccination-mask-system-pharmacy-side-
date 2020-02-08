@@ -1,0 +1,8 @@
+D:\Project\Mask\Mask\bin\Release\Mask.exe.config
+D:\Project\Mask\Mask\bin\Release\Mask.exe
+D:\Project\Mask\Mask\bin\Release\Mask.pdb
+D:\Project\Mask\Mask\obj\Release\Mask.Form1.resources
+D:\Project\Mask\Mask\obj\Release\Mask.Properties.Resources.resources
+D:\Project\Mask\Mask\obj\Release\Mask.csproj.GenerateResource.cache
+D:\Project\Mask\Mask\obj\Release\Mask.exe
+D:\Project\Mask\Mask\obj\Release\Mask.pdb
