@@ -1,6 +1,7 @@
 # 防疫口罩系統(藥局端)
 此程式開發目的是方便藥局端同時能夠監控藥局的剩餘量，又同時能夠過卡。
 ## 下載連結
+(目前過卡部分有點小當)
 https://drive.google.com/file/d/1nqLwq8snC2_Nx2EawIy3pOnD60ul5Ekp/view?usp=sharing
 ## 使用方法
 
