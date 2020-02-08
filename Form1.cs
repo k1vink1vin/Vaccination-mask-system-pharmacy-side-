@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.IO;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace Mask
 {
@@ -16,8 +18,52 @@ namespace Mask
     {
         public Form1()
         {
+            
             InitializeComponent();
+            SetWebBrowserFeatures(11);
             webBrowser1.Url = new Uri("https://medvpn.nhi.gov.tw/iwse0000/IWSE0020S01.aspx");
+        }
+
+        static void SetWebBrowserFeatures(int ieVersion)
+        {
+            // don't change the registry if running in-proc inside Visual Studio
+            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
+                return;
+            //獲取程序及名稱
+            var appName = System.IO.Path.GetFileName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            //得到瀏覽器的模式的值
+            UInt32 ieMode = GeoEmulationModee(ieVersion);
+            var featureControlRegKey = @"HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main\FeatureControl\";
+            //設置瀏覽器對應用程序（appName）以什麼模式（ieMode）運行
+            Registry.SetValue(featureControlRegKey + "FEATURE_BROWSER_EMULATION",appName, ieMode, RegistryValueKind.DWord);
+            // enable the features which are "On" for the full Internet Explorer browser
+            //不曉得設置有什麼用
+            Registry.SetValue(featureControlRegKey + "FEATURE_ENABLE_CLIPCHILDREN_OPTIMIZATION",appName, 1, RegistryValueKind.DWord);
+        }
+
+        /// 通過版本得到瀏覽器模式的值  
+        static UInt32 GeoEmulationModee(int browserVersion)
+        {
+            UInt32 mode = 11000; // Internet Explorer 11. Webpages containing standards-based !DOCTYPE directives are displayed in IE11 Standards mode.   
+            switch (browserVersion)
+            {
+                case 7:
+                    mode = 7000; // Webpages containing standards-based !DOCTYPE directives are displayed in IE7 Standards mode.   
+                    break;
+                case 8:
+                    mode = 8000; // Webpages containing standards-based !DOCTYPE directives are displayed in IE8 mode.   
+                    break;
+                case 9:
+                    mode = 9000; // Internet Explorer 9. Webpages containing standards-based !DOCTYPE directives are displayed in IE9 mode.                      
+                    break;
+                case 10:
+                    mode = 10000; // Internet Explorer 10.  
+                    break;
+                case 11:
+                    mode = 11000; // Internet Explorer 11  
+                    break;
+            }
+            return mode;
         }
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
