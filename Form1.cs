@@ -11,6 +11,7 @@ using System.Net;
 using System.IO;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Timers;
 
 namespace Mask
 {
@@ -18,12 +19,26 @@ namespace Mask
     {
         public Form1()
         {
-            
             InitializeComponent();
+
             SetWebBrowserFeatures(11);
             webBrowser1.Url = new Uri("https://medvpn.nhi.gov.tw/iwse0000/IWSE0020S01.aspx");
+
+            domainUpDown1.Items.Add(1);
+            domainUpDown1.Items.Add(2);
+            domainUpDown1.Items.Add(3);
+            domainUpDown1.Items.Add(4);
+            domainUpDown1.Items.Add(5);
+            domainUpDown1.Items.Add(6);
+            domainUpDown1.Items.Add(7);
+            domainUpDown1.Items.Add(8);
+            domainUpDown1.Items.Add(9);
+            //預設COM 3
+            domainUpDown1.SelectedIndex = 2;
+
         }
 
+        
         static void SetWebBrowserFeatures(int ieVersion)
         {
             // don't change the registry if running in-proc inside Visual Studio
@@ -66,23 +81,19 @@ namespace Mask
             return mode;
         }
 
-        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void button1_Click(object sender, EventArgs e)
+        {
+            data_update();
+        }
+
+        private void data_update()
         {
             WebClient wc = new WebClient();
             wc.DownloadFile("https://data.nhi.gov.tw/resource/mask/maskdata.csv", ".\\maskdata.csv");
             FileStream fs = new FileStream(".\\maskdata.csv", System.IO.FileMode.Open, System.IO.FileAccess.Read);
             StreamReader sr = new StreamReader(fs, Encoding.Default);
-
+            
             //記錄每次讀取的一行記錄
             DataTable dt = new DataTable();
             string strLine = "";
@@ -105,7 +116,7 @@ namespace Mask
                     for (int i = 0; i < columnCount; i++)
                     {
                         tableHead[i] = tableHead[i].Replace("\"", "");
-                        DataColumn dc = new DataColumn(tableHead[i]);
+                        DataColumn dc = new DataColumn(tableHead[i], typeof(string));
                         dt.Columns.Add(dc);
                     }
                 }
@@ -120,15 +131,17 @@ namespace Mask
                     dt.Rows.Add(dr);
                 }
             }
+            
             if (aryLine != null && aryLine.Length > 0)
             {
                 dt.DefaultView.Sort = tableHead[2] + " " + "DESC";
             }
             sr.Close();
             fs.Close();
-
-            DataRow[] drg = dt.Select("醫事機構代碼 = " + textBox1.Text);
-            if(drg.Length==0)
+            String a = "醫事機構代碼=" + "'" + Convert.ToString(textBox1.Text.ToString()) + "'";
+            DataRow[] drg = dt.Select(a);
+            
+            if (drg.Length == 0)
             {
                 name.Text = Convert.ToString("未知(表示已售完)");
                 adult.Text = Convert.ToString("0");
@@ -142,22 +155,47 @@ namespace Mask
                 child.Text = Convert.ToString(drg[0][5].ToString());
                 time.Text = Convert.ToString(drg[0][6].ToString());
             }
-            
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            timer1.Start();
+            timer2.Start();
+        }
+
+        
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (webBrowser1.IsBusy)
+            {
+                label3.Text = "系統繁忙中";
+                label3.ForeColor = Color.Red;
+            }
+            else
+            {
+                label3.Text = "系統閒置中";
+                label3.ForeColor = Color.Black;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.Arguments = "/c" + "start " + Application.StartupPath + "/Security/csUpdate.exe " + (domainUpDown1.SelectedIndex);
+            process.StartInfo.UseShellExecute = false;   //是否使用作業系統shell啟動 
+            process.StartInfo.CreateNoWindow = false;   //是否在新視窗中啟動該程序的值 (不顯示程式視窗)
+            process.Start();
+            process.WaitForExit();  //等待程式執行完退出程序
+            process.Close();
 
         }
 
-        private void adult_Click(object sender, EventArgs e)
+        private void timer2_Tick(object sender, EventArgs e)
         {
-
+            data_update();
         }
     }
 }
