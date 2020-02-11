@@ -19,5 +19,5 @@
 ![Default](Pic/Default.PNG)
 -   有庫存狀態
 ![True](Pic/True.PNG)
--   無庫存狀態 (或找無資料)
+-   無庫存(全數已售完)狀態 (或找無資料)
 ![False](Pic/False.PNG)
